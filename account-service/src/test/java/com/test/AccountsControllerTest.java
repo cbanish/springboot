@@ -86,6 +86,15 @@ public class AccountsControllerTest {
 		assertThat(responseEntity.getStatusCodeValue()).isEqualTo(202);
 		assertThat(responseEntity.getBody().getAccountFromBalance()).isEqualTo(new BigDecimal(45000));
 	}
+	
+	@Test
+	public void tesTransferMoneyException() throws Exception {
+		TransferRequest req1=new TransferRequest();
+		Mockito.when(acctService.transferAmount(req1)).thenThrow(AccountNotFoundException.class);
+		Assertions.assertThrows(AccountNotFoundException.class, () -> {
+			accountsController.transferMoney(req1);
+	  });
+	}
 
 	private Account getUserAccount() {
 		Account acct=new Account();

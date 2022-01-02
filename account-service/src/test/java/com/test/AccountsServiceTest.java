@@ -23,8 +23,9 @@ import com.test.model.TransferResult;
 import com.test.repository.AccountsRepository;
 import com.test.service.AccountsService;
 import com.test.service.AccountsServiceImpl;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AccountsServiceTest {
 
@@ -49,17 +50,17 @@ public class AccountsServiceTest {
 
 	@Test
 	public void testGetAccountDetails2ExceptionThrown() throws Exception {
-		Mockito.when(repo.findById(Mockito.any(Long.class)))
+		Mockito.when(repo.findById(Long.valueOf(1001L)))
 				.thenThrow(new AccountNotFoundException("Account not found", AccountConstant.CLIENT_ERROR1));
 
 		Assertions.assertThatExceptionOfType(AccountNotFoundException.class)
-				.isThrownBy(() -> accountService.getAccountDetails(Long.valueOf(1000L)));
+				.isThrownBy(() -> accountService.getAccountDetails(Long.valueOf(1002L)));
 	}
 
 	@Test
-	public void testTransferAmountAccountFromException() {
+	public void testTransferAmountAccountFromException() throws Exception {
 		TransferRequest req = new TransferRequest();
-		req.setAccountFrom(Long.valueOf(1000L));
+		req.setAccountFrom(Long.valueOf(1003L));
 		req.setAccountTo(Long.valueOf(10000235422L));
 		req.setTransferAmt(new BigDecimal(5000));
 		Mockito.when(repo.findById(Long.valueOf(1000L))).thenThrow(AccountNotFoundException.class);
@@ -68,10 +69,10 @@ public class AccountsServiceTest {
 	}
 
 	@Test
-	public void testTransferAmountAccountToException() {
+	public void testTransferAmountAccountToException() throws Exception {
 		TransferRequest req = new TransferRequest();
 		req.setAccountFrom(Long.valueOf(10000236121L));
-		req.setAccountTo(Long.valueOf(2000L));
+		req.setAccountTo(Long.valueOf(2002L));
 		req.setTransferAmt(new BigDecimal(5000));
 		Mockito.when(repo.findById(Long.valueOf(10000236121L))).thenReturn(getUserAccount());
 		Mockito.when(repo.findById(Long.valueOf(2000L))).thenThrow(AccountNotFoundException.class);
@@ -80,7 +81,7 @@ public class AccountsServiceTest {
 	}
 
 	@Test
-	public void testTransferAmountInsufficientBalanceException() {
+	public void testTransferAmountInsufficientBalanceException() throws Exception {
 		TransferRequest req = new TransferRequest();
 		req.setAccountFrom(Long.valueOf(10000236121L));
 		req.setAccountTo(Long.valueOf(10000235422L));

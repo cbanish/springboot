@@ -2,6 +2,7 @@ package com.test;
 
 import java.math.BigDecimal;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
 
@@ -24,9 +25,9 @@ public class TestBean {
 	@Test
 	public void testEqualsHashcode() {
 		Account obj1=new Account(Long.valueOf(10000236121L),"Gupta", "Mumbai North","Savings","122, North Mumbai",new BigDecimal(50000));
-		Account obj2=obj1;
-		obj1.equals(obj2);
-		obj1.hashCode();
+		Account obj2=new Account(Long.valueOf(10000235422L),"Paul", "Mumbai North","Savings","122, North Mumbai",new BigDecimal(50000));
+		Assertions.assertFalse(obj1.equals(obj2));  
+		Assertions.assertNotNull(obj1.hashCode()); 
 	}
 
 }
