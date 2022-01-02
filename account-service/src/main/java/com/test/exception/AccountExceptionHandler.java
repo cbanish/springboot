@@ -54,6 +54,6 @@ public class AccountExceptionHandler {
         response.setErrorCode(valExp.getErrorCode());
         response.setErrorMessage(errorMsg);
         
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 }

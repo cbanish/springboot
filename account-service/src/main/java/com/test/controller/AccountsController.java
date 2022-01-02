@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/accounts")
-@Api(tags = { "Accounts Controller" }, description = "Provide APIs for account operations")
+@Api(tags = { "Accounts Controller"}, description = "Provide APIs for account operations")
 public class AccountsController {
 	
 	private static final Logger log = LoggerFactory.getLogger(AccountsController.class);
@@ -39,16 +39,16 @@ public class AccountsController {
 
 	@GetMapping("/{accountNo}/details")
 	@ApiOperation(value = "Get account details by accountNo", response = Account.class, produces = "application/json")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid AccountNo supplied"),
-							@ApiResponse(code = 404, message = "Account not found with AccountNo")})
-	public Account getAccountDetails(
-			@ApiParam(value = "AccountNo related to the account", required = true) @PathVariable Long accountNo) {
-		return accountService.getAccountDetails(accountNo);
+	@ApiResponses(value = { @ApiResponse(code=200,message = "ACCEPTED"),@ApiResponse(code = 404, message = "Account validation failed")})
+	public ResponseEntity<Account> getAccountDetails(
+			@ApiParam(name =  "accountNo",type = "long", required = true) @PathVariable Long accountNo) throws Exception {
+		return new ResponseEntity<>(accountService.getAccountDetails(accountNo), HttpStatus.ACCEPTED);
 	}
 	
 	@PostMapping(path = "/transfer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "API for transfer money between accounts", response = TransferResult.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity transferMoney(@RequestBody TransferRequest request) throws Exception {
+	@ApiOperation(value = "API for transfering money between accounts", response = TransferResult.class, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiResponses(value = { @ApiResponse(code=200,message = "ACCEPTED" ),@ApiResponse(code = 404, message = "Account validation failed")})
+	public ResponseEntity<TransferResult> transferMoney(@RequestBody TransferRequest request) throws Exception {
 
 		try {
 			TransferResult result = accountService.transferAmount(request);

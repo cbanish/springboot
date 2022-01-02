@@ -9,7 +9,7 @@ import com.test.model.TransferResult;
 
 public interface AccountsService {
 
-	public Account getAccountDetails(Long accountNo);
+	public Account getAccountDetails(Long accountNo) throws AccountNotFoundException;
 
 	public TransferResult transferAmount(TransferRequest transfer)
 			throws InsufficientBalanceException, AccountNotFoundException, BusinessException;

@@ -11,7 +11,7 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-/*
+
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
@@ -19,9 +19,8 @@ public class SwaggerConfig {
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).
 				select()
-				//.apis(RequestHandlerSelectors.basePackage("guru.springframework.controllers"))
-				//.paths(PathSelectors.regex("/.*"))
-				//.paths(Predicates.not(PathSelectors.regex("/error.*")))
+				.apis(RequestHandlerSelectors.basePackage("com.test"))
+				.paths(PathSelectors.regex("/.*"))
 				.build()
 				.apiInfo(apiInfo());
 	}
@@ -29,8 +28,9 @@ public class SwaggerConfig {
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
 				.title("Account Operations API")
-				.description("Account Operations API")
+				.description("Account Operations APIs for account transactions")
+				.termsOfServiceUrl("http://cbanish.github.com")
 				.version("1.0")
 				.build();
 	}
-}*/
+}

@@ -34,9 +34,9 @@ public class AccountsServiceImpl implements AccountsService {
 	public TransferResult transferAmount(TransferRequest transfer) throws InsufficientBalanceException, AccountNotFoundException, BusinessException {
 		TransferResult result= new TransferResult();
 		ReadWriteLock lock = new ReentrantReadWriteLock();
+		log.info("transferAmount method called");
 		Lock writeLock = lock.writeLock();
-		try {
-		writeLock.lock();
+
 		Account accountFrom = accountsRepository.findById(transfer.getAccountFrom())
 				.orElseThrow(() -> new AccountNotFoundException(
 						"Account number: " + transfer.getAccountFrom() + " does not exist.",
@@ -54,7 +54,8 @@ public class AccountsServiceImpl implements AccountsService {
 		}
 		accountFrom.setBalance(accountFrom.getBalance().subtract(transfer.getTransferAmt()));
 		accountTo.setBalance(accountTo.getBalance().add(transfer.getTransferAmt()));
-		
+		try {
+		writeLock.lock();
 		accountsRepository.save(accountFrom);
 		accountsRepository.save(accountTo);
 		result.setAccountFrom(accountFrom.getAccountNo());
@@ -72,7 +73,7 @@ public class AccountsServiceImpl implements AccountsService {
 	}
 
 	@Override
-	public Account getAccountDetails(Long accountNo) {
+	public Account getAccountDetails(Long accountNo) throws AccountNotFoundException {
 		Optional<Account> account = accountsRepository.findById(accountNo);
 		if (!account.isPresent()) {
 			throw new AccountNotFoundException("Account Number " + accountNo + " does not exist.",
