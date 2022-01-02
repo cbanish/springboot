@@ -17,20 +17,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2).
-				select()
-				.apis(RequestHandlerSelectors.basePackage("com.test"))
-				.paths(PathSelectors.regex("/.*"))
-				.build()
-				.apiInfo(apiInfo());
+		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.test"))
+				.paths(PathSelectors.regex("/.*")).build().apiInfo(apiInfo());
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder()
-				.title("Account Operations API")
+		return new ApiInfoBuilder().title("Account Operations API")
 				.description("Account Operations APIs for account transactions")
-				.termsOfServiceUrl("http://cbanish.github.com")
-				.version("1.0")
-				.build();
+				.termsOfServiceUrl("http://cbanish.github.com").version("1.0").build();
 	}
 }

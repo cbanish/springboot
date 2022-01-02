@@ -51,8 +51,7 @@ public class AccountsController {
 	public ResponseEntity<TransferResult> transferMoney(@RequestBody TransferRequest request) throws Exception {
 
 		try {
-			TransferResult result = accountService.transferAmount(request);
-			
+			TransferResult result = accountService.transferAmount(request);			
 			return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
 		} catch (AccountNotFoundException | InsufficientBalanceException e) {
 			log.error("Fail to transfer balances due to validation failure");

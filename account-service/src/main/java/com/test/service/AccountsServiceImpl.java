@@ -25,15 +25,16 @@ import com.test.repository.AccountsRepository;
 public class AccountsServiceImpl implements AccountsService {
 
 	private static final Logger log = LoggerFactory.getLogger(AccountsServiceImpl.class);
-
+	ReadWriteLock lock = new ReentrantReadWriteLock();
+	
 	@Autowired
 	private AccountsRepository accountsRepository;
 
 	@Transactional
 	@Override
-	public TransferResult transferAmount(TransferRequest transfer) throws InsufficientBalanceException, AccountNotFoundException, BusinessException {
-		TransferResult result= new TransferResult();
-		ReadWriteLock lock = new ReentrantReadWriteLock();
+	public TransferResult transferAmount(TransferRequest transfer)
+			throws InsufficientBalanceException, AccountNotFoundException, BusinessException {
+		TransferResult result = new TransferResult();
 		log.info("transferAmount method called");
 		Lock writeLock = lock.writeLock();
 
@@ -55,29 +56,34 @@ public class AccountsServiceImpl implements AccountsService {
 		accountFrom.setBalance(accountFrom.getBalance().subtract(transfer.getTransferAmt()));
 		accountTo.setBalance(accountTo.getBalance().add(transfer.getTransferAmt()));
 		try {
-		writeLock.lock();
-		accountsRepository.save(accountFrom);
-		accountsRepository.save(accountTo);
-		result.setAccountFrom(accountFrom.getAccountNo());
-		result.setAccountTo(accountTo.getAccountNo());
-		result.setAccountFromBalance(accountFrom.getBalance());
-		result.setAccountToBalance(accountTo.getBalance());
-		}catch (Exception e) {
-			throw new BusinessException(
-					"Encountered error during transaction.",
-					AccountConstant.SYSTEM_ERROR);
-		}finally {
-            writeLock.unlock();
-        }
+			writeLock.lock();
+			accountsRepository.save(accountFrom);
+			accountsRepository.save(accountTo);
+			result.setAccountFrom(accountFrom.getAccountNo());
+			result.setAccountTo(accountTo.getAccountNo());
+			result.setAccountFromBalance(accountFrom.getBalance());
+			result.setAccountToBalance(accountTo.getBalance());
+		} catch (Exception e) {
+			throw new BusinessException("Encountered error during transaction.", AccountConstant.SYSTEM_ERROR);
+		} finally {
+			writeLock.unlock();
+		}
 		return result;
 	}
 
 	@Override
 	public Account getAccountDetails(Long accountNo) throws AccountNotFoundException {
-		Optional<Account> account = accountsRepository.findById(accountNo);
-		if (!account.isPresent()) {
-			throw new AccountNotFoundException("Account Number " + accountNo + " does not exist.",
-					AccountConstant.CLIENT_ERROR1);
+		Optional<Account> account = null;
+		Lock readLock = lock.readLock();
+		readLock.lock();
+		try {
+			account = accountsRepository.findById(accountNo);
+			if (!account.isPresent()) {
+				throw new AccountNotFoundException("Account Number " + accountNo + " does not exist.",
+						AccountConstant.CLIENT_ERROR1);
+			}
+		} finally {
+			readLock.unlock();
 		}
 		return account.get();
 	}

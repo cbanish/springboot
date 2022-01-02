@@ -25,8 +25,8 @@ public class TestBean {
 	@Test
 	public void testEqualsHashcode() {
 		Account obj1=new Account(Long.valueOf(10000236121L),"Gupta", "Mumbai North","Savings","122, North Mumbai",new BigDecimal(50000));
-		Account obj2=new Account(Long.valueOf(10000235422L),"Paul", "Mumbai North","Savings","122, North Mumbai",new BigDecimal(50000));
-		Assertions.assertFalse(obj1.equals(obj2));  
+		Account obj2=new Account(Long.valueOf(10000236121L),"Gupta", "Mumbai North","Savings","122, North Mumbai",new BigDecimal(50000));
+		Assertions.assertTrue(obj1.equals(obj2));  
 		Assertions.assertNotNull(obj1.hashCode()); 
 	}
 

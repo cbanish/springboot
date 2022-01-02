@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Lock;
 
 import com.test.model.Account;
 
-public interface AccountsRepository extends JpaRepository<Account, Long>{
-	
+public interface AccountsRepository extends JpaRepository<Account, Long> {
+
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	public Account save(Account entity);
 }
