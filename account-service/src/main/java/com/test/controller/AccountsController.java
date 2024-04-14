@@ -21,44 +21,34 @@ import com.test.model.TransferRequest;
 import com.test.model.TransferResult;
 import com.test.service.AccountsService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/accounts")
-@Api(tags = { "Accounts Controller"}, description = "Provide APIs for account operations")
 public class AccountsController {
-	
-	private static final Logger log = LoggerFactory.getLogger(AccountsController.class);
-	
-	@Autowired
-	private AccountsService accountService;
 
-	@GetMapping("/{accountNo}/details")
-	@ApiOperation(value = "Get account details by accountNo", response = Account.class, produces = "application/json")
-	@ApiResponses(value = { @ApiResponse(code=200,message = "ACCEPTED"),@ApiResponse(code = 404, message = "Account validation failed")})
-	public ResponseEntity<Account> getAccountDetails(
-			@ApiParam(name =  "accountNo",type = "long", required = true) @PathVariable Long accountNo) throws Exception {
-		return new ResponseEntity<>(accountService.getAccountDetails(accountNo), HttpStatus.ACCEPTED);
-	}
-	
-	@PostMapping(path = "/transfer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "API for transfering money between accounts", response = TransferResult.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiResponses(value = { @ApiResponse(code=200,message = "ACCEPTED" ),@ApiResponse(code = 404, message = "Account validation failed")})
-	public ResponseEntity<TransferResult> transferMoney(@RequestBody TransferRequest request) throws Exception {
+    private static final Logger log = LoggerFactory.getLogger(AccountsController.class);
 
-		try {
-			TransferResult result = accountService.transferAmount(request);			
-			return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
-		} catch (AccountNotFoundException | InsufficientBalanceException e) {
-			log.error("Fail to transfer balances due to validation failure");
-			throw e;
-		} catch (BusinessException cbEx) {
-			log.error("Fail to transfer balances due to system failure");
-			throw cbEx;
-		}
-	}
+    @Autowired
+    private AccountsService accountService;
+
+    @GetMapping("/{accountNo}/details")
+    public ResponseEntity<Account> getAccountDetails(
+            @PathVariable Long accountNo) throws Exception {
+        return new ResponseEntity<>(accountService.getAccountDetails(accountNo), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping(path = "/transfer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TransferResult> transferMoney(@RequestBody TransferRequest request) throws Exception {
+
+        try {
+            TransferResult result = accountService.transferAmount(request);
+            return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+        } catch (AccountNotFoundException | InsufficientBalanceException e) {
+            log.error("Fail to transfer balances due to validation failure");
+            throw e;
+        } catch (BusinessException cbEx) {
+            log.error("Fail to transfer balances due to system failure");
+            throw cbEx;
+        }
+    }
 }

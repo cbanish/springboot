@@ -2,9 +2,7 @@ package com.test.model;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.NotNull;
-
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
